@@ -943,6 +943,7 @@ button[type="submit"] {
   
   .create-post {
     width: 98%;
+    /* Don't wanna do anything, just to push a new commit */
   }
 
   .posts__container {
