@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 
 const redisClient = new Redis(process.env.REDIS_URL);
 
-const WHITELIST_IPS = (process.env.WHITELIST_IPS || '127.0.0.1,::1')
+const WHITELIST_IPS = (process.env.WHITELIST_IPS)
   .split(',')
   .map(s => s.trim())
   .filter(Boolean);
