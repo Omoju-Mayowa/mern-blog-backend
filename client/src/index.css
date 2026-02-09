@@ -932,6 +932,7 @@ button[type="submit"] {
 
   .posts__container {
     grid-template-columns: 1fr;
+    place-items: center;
     gap: 1rem;
   }
 
