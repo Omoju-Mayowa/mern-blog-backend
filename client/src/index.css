@@ -590,8 +590,9 @@ button[type="submit"] {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 3rem;
-  max-height: 50vh;
-  overflow: auto;
+  height: auto;
+  /* max-height: 50vh; */
+  /* overflow: auto; */
 }
 
 .author {
@@ -906,8 +907,9 @@ button[type="submit"] {
   .authors__container {
     grid-template-columns: 1fr;
     gap: 1.2rem;
-    max-height: 50vh;
-    overflow: auto;
+    height: auto;
+    /* max-height: 50vh; */
+    /* overflow: auto; */
   }
 
   .dashboard__post {
