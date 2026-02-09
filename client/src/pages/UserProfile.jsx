@@ -7,6 +7,8 @@ import PostItem from './components/PostItem'
 import usePostStream from './components/usePostStream'
 import Loader from './components/Loader'
 
+const [isLoading, setIsLoading] = useState(false)
+
 const scrollTop = () => {
   window.scrollTo(0, 0);
 }
@@ -113,6 +115,8 @@ const UserProfile = () => {
     e.preventDefault()
     if (!isOwnProfile || !token) return setError('Unauthorized')
 
+    setIsLoading(true)
+
     try {
       setError('')
       
@@ -149,6 +153,8 @@ const UserProfile = () => {
       alert("Profile updated successfully")
     } catch (err) {
       setError(err.response?.data?.message || 'Update failed')
+    } finally {
+        setIsLoading(false)
     }
   }
 
@@ -196,7 +202,9 @@ const UserProfile = () => {
                 </>
               )}
               
-              <button type="submit" className='btn primary'>Save Changes</button>
+              <button type="submit" className='btn primary'>
+                {isLoading ? 'Saving...' : 'Save Changes'}
+              </button>
               <button type="button" className='btn' onClick={() => setIsEditing(false)}>Cancel</button>
             </form>
           ) : (
