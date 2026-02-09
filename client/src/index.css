@@ -130,6 +130,7 @@ img {
 
 section {
   padding-bottom: 2rem;
+  height: auto;
   margin-top: 6rem;
 }
 
