@@ -9,6 +9,8 @@ import { sendSSE } from './postControllers.js';
 import s3 from '../utils/r2Client.js';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getPeppers, getCurrentPepper } from '../utils/peppers.js';
+import sendEmail from '../utils/sendEmail.js';
+import { shouldSendLoginAlert, resetLoginAlerts } from '../middleware/loginRateLimiter.js';
 
 const avatarSizeBytes = 10485760; 
 
@@ -130,6 +132,18 @@ export const loginUser = async (req, res, next) => {
         );
 
         if (matchedIndex === null || matchedIndex === undefined) {
+            const shouldAlert = await shouldSendLoginAlert(user.email);
+            if (shouldAlert) {
+                await sendEmail(
+                    user.email,
+                    'Security Alert: Failed Login Attempts',
+                    `<h4>Hello ${user.name || 'there'}</h4>
+                     <p>We detected multiple failed login attempts on your account.</p>
+                     <p><b>IP Address:</b> ${req.ip}</p>
+                     <p>If this wasn’t you, please reset your password.</p>
+                     <h4>Regards,<br/>Mern Blog Team</h4>`
+                );
+            }
             return next(new HttpError('Invalid credentials', 401));
         }
 
@@ -146,6 +160,8 @@ export const loginUser = async (req, res, next) => {
             });
             console.log(`User ${user.email} security upgraded to latest pepper index: ${version}`);
         }
+
+        await resetLoginAlerts(user.email);
 
         const token = jwt.sign(
             { id: user._id, name: user.name }, 

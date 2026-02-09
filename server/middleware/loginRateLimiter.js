@@ -11,13 +11,13 @@ const WHITELIST_IPS = (process.env.WHITELIST_IPS)
 
 // Limits
 const maxAttemptsByIP = 10;        // e.g., 7 attempts per window
-// const maxAttemptsByEmail = 5;      // e.g., 5 failed logins per email
+const maxAttemptsByEmail = 5;      // 5 failed logins per email
 
 const IpBlockDuration = 30 * 60; // 30 mins lockdown
-// const EmailBlockDuration = 30 * 60; // 30 mins lockdown
+const EmailBlockDuration = 30 * 60; // 30 mins lockdown
 
 const IpResetWindow = 30 * 60; // 30 mins Reset window
-// const EmailResetWindow = 10 * 60; // 1 hr Reset Window
+const EmailResetWindow = 30 * 60; // 30 mins Reset Window
 
 // Rate limiters
 const limiterSlowBruteByIP = new RateLimiterRedis({
@@ -64,19 +64,17 @@ async function consumeIfNotWhitelisted(ip) {
   return limiterSlowBruteByIP.consume(ip);
 }
 
-// Discontinued due to impracticality
-
-// const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
-//   storeClient: redisClient,
-//   keyPrefix: 'login_fail_email',
-//   points: maxAttemptsByEmail,
-//   duration: EmailResetWindow,     // 1 hour window
-//   blockDuration: EmailBlockDuration // Block 30 minutes if exceeded
-// });
+const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: 'login_fail_email',
+  points: maxAttemptsByEmail,
+  duration: EmailResetWindow,
+  blockDuration: EmailBlockDuration
+});
 
 export {
   limiterSlowBruteByIP,
-  // limiterConsecutiveFailsByEmail,
+  limiterConsecutiveFailsByEmail,
   redisClient,
   isIpWhitelisted,
   consumeIfNotWhitelisted
@@ -94,4 +92,34 @@ export async function loginRateLimiter(req, res, next) {
       message: `Too many login attempts. Try again in ${retrySecs || 60}s.`
     });
   }
+}
+
+// Returns true when a security email should be sent (first time threshold hit)
+export async function shouldSendLoginAlert(email) {
+  if (!email) return false;
+  const emailKey = email.toLowerCase();
+  try {
+    const res = await limiterConsecutiveFailsByEmail.consume(emailKey);
+    if (res.remainingPoints === 0) {
+      return await markLoginAlertIfNotSent(emailKey);
+    }
+    return false;
+  } catch {
+    return await markLoginAlertIfNotSent(emailKey);
+  }
+}
+
+export async function resetLoginAlerts(email) {
+  if (!email) return;
+  const emailKey = email.toLowerCase();
+  await limiterConsecutiveFailsByEmail.delete(emailKey);
+  await redisClient.del(`login_alert_sent:${emailKey}`);
+}
+
+async function markLoginAlertIfNotSent(emailKey) {
+  const key = `login_alert_sent:${emailKey}`;
+  const already = await redisClient.get(key);
+  if (already) return false;
+  await redisClient.set(key, '1', 'EX', EmailBlockDuration);
+  return true;
 }

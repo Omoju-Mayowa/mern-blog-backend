@@ -19,6 +19,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 // ────────────────────────────────────────────────────────────
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
