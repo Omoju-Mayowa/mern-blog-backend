@@ -7,7 +7,6 @@ import PostItem from './components/PostItem'
 import usePostStream from './components/usePostStream'
 import Loader from './components/Loader'
 
-const [isLoading, setIsLoading] = useState(false)
 
 const scrollTop = () => {
   window.scrollTo(0, 0);
@@ -42,6 +41,9 @@ const UserProfile = () => {
   const [avatar, setAvatar] = useState(null)
   const [avatarFile, setAvatarFile] = useState(null)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const navigate = useNavigate()
   const { currentUser } = useContext(UserContext)
