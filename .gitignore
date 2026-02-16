@@ -5,3 +5,7 @@ node_modules/
 server/uploads/
 .git.backup/
 .git.broken.backup/
+.dockerignore
+Dockerfile
+READMe.Docker.md
+compose.yaml
