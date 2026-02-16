@@ -18,19 +18,30 @@
 Directory Layout of the Application.
 ```
 mern-cloud/
+├── .DS_Store
+├── .gitattributes
+├── .gitignore
+├── .postman/
+│   └── config.json
 ├── FEATURES_IMPLEMENTED.md
 ├── IMPLEMENTATION_CHECKLIST.md
 ├── README.md
 ├── categories.txt
 ├── client/
+│   ├── .DS_Store
+│   ├── .env.txt
+│   ├── .gitignore
 │   ├── index.html
+│   ├── loaderio-1e56da91a7753638f3f7f8dcc590cc4f.txt
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── src/
+│   │   ├── .DS_Store
 │   │   ├── app.css
 │   │   ├── index.css
 │   │   ├── main.jsx
 │   │   └── pages/
+│   │       ├── .DS_Store
 │   │       ├── AuthorPosts.jsx
 │   │       ├── Authors.jsx
 │   │       ├── CreatePost.jsx
@@ -50,20 +61,6 @@ mern-cloud/
 │   │       ├── categoryPosts.jsx
 │   │       ├── changePassword.jsx
 │   │       ├── components/
-│   │       │   ├── CursorManager.jsx
-│   │       │   ├── Footer.jsx
-│   │       │   ├── Layout.jsx
-│   │       │   ├── LikeButton.jsx
-│   │       │   ├── Loader.jsx
-│   │       │   ├── MediaDisplay.jsx
-│   │       │   ├── NavBar.jsx
-│   │       │   ├── PostAuthor.jsx
-│   │       │   ├── PostItem.jsx
-│   │       │   ├── Posts.jsx
-│   │       │   ├── axios.js
-│   │       │   ├── context/
-│   │       │   ├── cursors/
-│   │       │   └── usePostStream.jsx
 │   │       ├── data.js
 │   │       ├── errorcss.css
 │   │       └── forgotPassword.jsx
@@ -73,6 +70,10 @@ mern-cloud/
 ├── package.json
 ├── pepper.txt
 └── server/
+    ├── .DS_Store
+    ├── .dockerignore
+    ├── .env.txt
+    ├── .gitignore
     ├── Dockerfile
     ├── README.Docker.md
     ├── compose.yaml
@@ -146,8 +147,11 @@ mern-cloud/
 
 #### Disclaimer
 > The project is built to rely on internet serices like cloudflare, mongodb and redis.
-> Redis and mongodb have been developed to work offline if you have the tools installed and set-up but not cloudflare. The project has to be built and deployed properly to work as expected.
-> You also have to define your own Environmental Variables(.env in all relative paths that need it), variable names will be pre-defined but the values won't.
+> Redis and mongodb have been developed to work offline if you have the tools installed and properly set-up but not cloudflare. The project has to be built and deployed properly to work as expected.
+> You also have to define your own Environment Variables(.env in all relative paths that need it), variable names will be pre-defined but the values won't.
+> FYI the env file is stored as .env(Rename it, don't be a lazy ass)
+
+> I also have some useless files that I'm either to lazy to delete or just don't wanna. Do whatever you want with 'em I guess.
 
 
 
