@@ -25,7 +25,7 @@ const EditPost = () => {
   
   const navigate = useNavigate()
   const { currentUser } = useContext(UserContext)
-  const token = currentUser?.token
+  const token = currentUser?.id
 
   const TITLE_LIMIT = 12000
   const DESCRIPTION_LIMIT = 50000
