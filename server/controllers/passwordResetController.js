@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import sendEmail from '../utils/sendEmail.js';
 import User from '../models/userModel.js';
 import crypto from 'crypto';
+import sendCookie from '../utils/sendCookie.js'
 import { getPeppers, getCurrentPepper } from '../utils/peppers.js'
 
 // Consistent with your User Controller
