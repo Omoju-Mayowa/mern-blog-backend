@@ -23,7 +23,7 @@ const UserProvider = ({ children }) => {
     const validateSess = async() => {
       try {
         const res = await API.get("/users/me")
-        setCurrentUser(res.data?.user)
+        setCurrentUser(res.data)
       } catch(err) {
         setCurrentUser(null)
       } finally {
