@@ -1,4 +1,4 @@
-const sendCookie = (res, token, statusCode, message) => {
+const sendCookie = (res, token, statusCode, user) => {
     
     const days = Number(process.env.COOKIE_EXPIRE)
     const options = {
