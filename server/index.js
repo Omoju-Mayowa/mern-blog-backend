@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 const allowedOrigins = [
-  process.env.SITE_URL,
+  process.env.SITE_LINK,
   // You can add more Origin URLs here if you cloned the repo.
 ];
 
