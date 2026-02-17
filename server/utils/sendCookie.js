@@ -18,4 +18,4 @@ const sendCookie = (res, token, statusCode, message) => {
 };
 
 
-export { sendCookie }
+export default sendCookie
