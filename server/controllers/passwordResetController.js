@@ -6,7 +6,6 @@ import sendEmail from '../utils/sendEmail.js';
 import User from '../models/userModel.js';
 import crypto from 'crypto';
 import { getPeppers, getCurrentPepper } from '../utils/peppers.js'
-import { use } from 'react';
 
 // Consistent with your User Controller
 const argonOptionsStrong = {
