@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import axios from './components/axios' // USE CUSTOM INSTANCE
+import API from './components/axios.js'
 import { FaEdit } from 'react-icons/fa'
 import { UserContext } from './components/context/userContext'
 import PostItem from './components/PostItem'
@@ -59,7 +59,7 @@ const UserProfile = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true)
-        const response = await axios.get(`/users/${id}`)
+        const response = await API.get(`/users/${id}`)
         setUserData(response.data)
         setFormData({
           name: response.data.name || '',
@@ -127,7 +127,7 @@ const UserProfile = () => {
         if (!formData.currentPassword) return setError('Current password required')
         if (formData.newPassword !== formData.confirmNewPassword) return setError('Passwords mismatch')
         
-        await axios.patch(`/users/edit-user`, formData, {
+        await API.patch(`/users/edit-user`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         })
       }
@@ -138,7 +138,7 @@ const UserProfile = () => {
       formDataToSend.append('email', formData.email)
       if (avatarFile) formDataToSend.append('avatar', avatarFile)
 
-      const response = await axios.patch(`/users/${id}`, formDataToSend, {
+      const response = await API.patch(`/users/${id}`, formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -234,7 +234,7 @@ const UserPosts = ({ userId }) => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`/posts/users/${userId}`)
+        const response = await API.get(`/posts/users/${userId}`)
         setPosts(Array.isArray(response.data) ? response.data : [])
       } catch (err) {
         setPosts([])

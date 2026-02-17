@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import API from './components/axios.js'
 import Loader from './components/Loader'
 import PostItem from './components/PostItem'
 import usePostStream from './components/usePostStream'
@@ -13,7 +13,7 @@ const Popular = () => {
     const fetchPosts = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`)
+        const response = await API.get(`${import.meta.env.VITE_API_BASE_URL}/posts`)
         const data = Array.isArray(response.data) ? response.data : []
         // Sort by likesCount descending; missing likesCount treated as 0
         data.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))

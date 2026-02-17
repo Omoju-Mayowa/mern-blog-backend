@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios';
+import API from '../components/axios.js'
 import ReactTimeAgo from 'react-time-ago'
 import TimeAgo from 'javascript-time-ago'
 import usePostStream from './usePostStream'
@@ -32,7 +32,7 @@ const PostAuthor = ({ authorID, createdAt }) => {
       }
 
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/${validAuthorID}`);
+        const response = await API.get(`${import.meta.env.VITE_API_BASE_URL}/users/${validAuthorID}`);
         setAuthor(response?.data);
       } catch (error) {
         console.warn("Failed to fetch author:", error);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios';
+import API from './components/axios.js'
 import { UserContext } from './components/context/userContext';
 
 const scrollTop = () => {
@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     e.preventDefault()
     setError('')
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/forgot-password`, userData)
+      const response = await API.post(`${import.meta.env.VITE_API_BASE_URL}/users/forgot-password`, userData)
       // OTP request succeeded; do not set currentUser here (we only requested an OTP)
       navigate('/changePassword')
     } catch (err) {

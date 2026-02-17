@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useNavigate, useParams } from 'react-router-dom'
 import { UserContext } from './components/context/userContext' // Adjust path if needed
-import axios from './components/axios' // Your custom instance with interceptors
+import API from './components/axios.js'
 import Loader from './components/Loader'
 
 const scrollTop = () => {
@@ -39,7 +39,7 @@ const EditPost = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('/categories')
+        const res = await API.get('/categories')
         setCategories(res.data || [])
       } catch (err) {
         console.error('Failed to fetch categories', err)
@@ -55,7 +55,7 @@ const EditPost = () => {
 
       try {
         setLoadingPost(true)
-        const response = await axios.get(`/posts/${id}`)
+        const response = await API.get(`/posts/${id}`)
         const post = response.data
 
         // CRITICAL FIX: Extract ID string from the creator object
@@ -122,7 +122,7 @@ const EditPost = () => {
       if (thumbnail) form.append('thumbnail', thumbnail)
       if (videoFile) form.append('video', videoFile)
 
-      await axios.patch(`/posts/${id}`, form, {
+      await API.patch(`/posts/${id}`, form, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}` 

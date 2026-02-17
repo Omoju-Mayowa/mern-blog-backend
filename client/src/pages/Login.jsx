@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import axios from './components/axios' // Import our custom instance
+import API from './components/axios.js'
 import { UserContext } from './components/context/userContext'
 
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault()
     setError('')
     try {
-      const response = await axios.post(`/users/login`, userData)
+      const response = await API.post(`/users/login`, userData)
       setCurrentUser(response.data)
       navigate('/')
     } catch (err) {

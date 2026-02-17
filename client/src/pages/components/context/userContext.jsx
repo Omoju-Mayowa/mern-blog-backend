@@ -22,8 +22,8 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     const validateSess = async() => {
       try {
-        const res = await API.get("/user/me")
-        setCurrentUser(res.data)
+        const res = await API.get("/users/me")
+        setCurrentUser(res.data?.user)
       } catch(err) {
         setCurrentUser(null)
       } finally {
@@ -37,7 +37,7 @@ const UserProvider = ({ children }) => {
   
   const logout = async () => {
     try {
-      await API.get("/user/logout")
+      await API.get("/users/logout")
     } catch (err) { }
       finally {
         setCurrentUser(null)

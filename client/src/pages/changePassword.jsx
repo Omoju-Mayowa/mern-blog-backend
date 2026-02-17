@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from './components/axios.js'
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from './components/context/userContext';
@@ -28,7 +28,7 @@ const ChangePassword = () => {
     e.preventDefault()
     setError('')
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/reset-password`, userData)
+      const response = await API.post(`${import.meta.env.VITE_API_BASE_URL}/users/reset-password`, userData)
       const user = response?.data
       setCurrentUser(user)
       // After successful reset the server returns a login payload; sign the user in and go home

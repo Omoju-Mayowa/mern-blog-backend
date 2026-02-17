@@ -170,18 +170,19 @@ export const loginUser = async (req, res, next) => {
             { expiresIn: '1d' }
         );
       
-        sendCookie(res, token, 200, {
-          id: user._id,
-          name: user.name,
-          avatar: user.avatar
-        })
-    
         res.status(200).json({ 
             token, 
             id: user._id, 
             name: user.name,
             avatar: user.avatar 
         });
+
+        return sendCookie(res, token, 200, {
+          id: user._id,
+          name: user.name,
+          avatar: user.avatar
+        })
+    
 
     } catch (error) {
         console.error("Login Controller Error:", error);

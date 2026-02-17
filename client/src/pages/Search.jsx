@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import axios from 'axios'
+import API from './components/axios.js'
 import PostItem from './components/PostItem'
 import Loader from './components/Loader'
 
@@ -14,7 +14,7 @@ const Search = () => {
         if (!query.trim()) { setResults([]); return; }
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts?q=${query.trim()}`)
+            const res = await API.get(`${import.meta.env.VITE_API_BASE_URL}/posts?q=${query.trim()}`)
             setResults(Array.isArray(res.data) ? res.data : [])
         } catch (err) { setResults([]); } finally { setLoading(false) }
     }

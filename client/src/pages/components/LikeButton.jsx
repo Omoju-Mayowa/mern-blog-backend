@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import axios from 'axios'
+import API from '../components/axios.js'
 import { useNavigate } from 'react-router-dom'
 import { HiThumbUp } from 'react-icons/hi'
 import { UserContext } from './context/userContext'
@@ -33,7 +33,7 @@ const LikeButton = ({ postID, initialLikesCount = 0, initialLikedBy = [] }) => {
     setCount(prevLiked ? Math.max(0, prevCount - 1) : prevCount + 1)
 
     try {
-      const res = await axios.post(
+      const res = await API.post(
         `${import.meta.env.VITE_API_BASE_URL}/posts/${postID}/like`,
         {},
         { headers: { Authorization: `Bearer ${currentUser.token}` } }

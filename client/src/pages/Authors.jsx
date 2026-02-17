@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import API from './components/axios.js'
 import usePostStream from './components/usePostStream'
 import Loader from './components/Loader'
 
@@ -12,7 +12,7 @@ const Authors = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users`)
+        const response = await API.get(`${import.meta.env.VITE_API_BASE_URL}/users`)
         setAuthors(Array.isArray(response.data) ? response.data : [])
       } finally { setLoading(false) }
     }

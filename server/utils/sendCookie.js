@@ -14,7 +14,7 @@ const sendCookie = (res, token, statusCode, message) => {
 
     res.cookie('access_token', token, options);
 
-    return res.status(statusCode).json({ message });
+    return res.status(statusCode).json({ user });
 };
 
 

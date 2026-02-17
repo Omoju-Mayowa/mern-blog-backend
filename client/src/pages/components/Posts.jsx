@@ -3,7 +3,7 @@ import usePostStream from './usePostStream'
 
 import PostItem from './PostItem'
 import Loader from './Loader'
-import axios from 'axios'
+import API from '../components/axios.js'
 
 const Posts = () => {
   const [posts, setPosts] = useState([])
@@ -13,7 +13,7 @@ const Posts = () => {
     const fetchPosts = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/posts`)
+        const response = await API.get(`${import.meta.env.VITE_API_BASE_URL}/posts`)
         setPosts(Array.isArray(response.data) ? response.data : [])
         console.log({["Fetched Post Data: "]: response.data})
       } catch (err) {

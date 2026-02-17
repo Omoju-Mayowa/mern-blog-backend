@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import API from './components/axios.js'
 
 const scrollTop = () => {
   window.scrollTo(0, 0);
@@ -29,7 +29,7 @@ const Register = () => {
     try {
       console.log('Sending registration request to:', `${import.meta.env.VITE_API_BASE_URL}/users/register`)
       console.log('User data:', userData)
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/register`, userData)
+      const response = await API.post(`${import.meta.env.VITE_API_BASE_URL}/users/register`, userData)
       const newUser = response.data
       console.log('Registration success:', newUser)
       if(!newUser) {

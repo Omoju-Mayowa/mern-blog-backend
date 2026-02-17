@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from './components/context/userContext'
-import axios from './components/axios' // USE YOUR CUSTOM INSTANCE FOR AUTO-LOGOUT
+import API from './components/axios.js'
 
 const scrollTop = () => {
   window.scrollTo(0, 0);
@@ -41,7 +41,7 @@ const CreatePost = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('/categories')
+        const res = await API.get('/categories')
         setCategories(res.data || [])
       } catch (err) {
         console.error('Failed to fetch categories', err)
@@ -90,7 +90,7 @@ const CreatePost = () => {
       const catExists = categories.some(c => c.name.toLowerCase() === categoryInput.toLowerCase())
       if (!catExists) {
         try {
-          await axios.post('/categories', { name: categoryInput }, {
+          await API.post('/categories', { name: categoryInput }, {
             headers: { Authorization: `Bearer ${token}` }
           })
         } catch (catErr) {
@@ -108,7 +108,7 @@ const CreatePost = () => {
       if (videoFile) form.append('video', videoFile)
 
       // 3. Submit Post
-      const res = await axios.post('/posts', form, {
+      const res = await API.post('/posts', form, {
         headers: { 
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}` 

@@ -5,7 +5,7 @@ import LikeButton from './components/LikeButton'
 import { UserContext } from './components/context/userContext'
 import Loader from './components/Loader'
 import DeletePost from './DeletePost'
-import axios from './components/axios' // USE CUSTOM INSTANCE
+import API from './components/axios.js'
 
 const PostDetail = () => {
   const { id } = useParams()
@@ -20,7 +20,7 @@ const PostDetail = () => {
       setIsLoading(true)
       try {
         // Using custom axios instance simplifies the URL
-        const response = await axios.get(`/posts/${id}`)
+        const response = await API.get(`/posts/${id}`)
         setPost(response?.data)
       } catch (err) { 
         console.error("Error fetching post details:", err) 

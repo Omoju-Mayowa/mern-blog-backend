@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from './components/axios' // Verify this path!
+import API from './components/axios.js'
 import { UserContext } from './components/context/userContext'
 import Loader from './components/Loader'
 import DeletePost from './DeletePost'
@@ -35,7 +35,7 @@ const Dashboard = () => {
     const fetchUserPosts = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(`/posts/users/${currentUser.id}`)
+        const response = await API.get(`/posts/users/${currentUser.id}`)
         
         // Ensure we are setting an array even if the backend sends something else
         const data = Array.isArray(response.data) ? response.data : []
