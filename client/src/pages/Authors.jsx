@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import API from './components/axios.js'
 import usePostStream from './components/usePostStream'
 import Loader from './components/Loader'
-// import { motion } from 'motion'
+import { motion } from 'motion/react'
 
 const Authors = () => {
   const [authors, setAuthors] = useState([])
