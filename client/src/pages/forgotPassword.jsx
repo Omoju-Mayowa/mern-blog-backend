@@ -43,7 +43,7 @@ const ForgotPassword = () => {
         <form className="form login__form" onSubmit={forgotUser}>
           {error && <p className="form__error-message">{error}</p>}
           <input type="email" placeholder='Enter your Email' name='email' value={userData.email} onChange={changeInputHandler} />
-          <button type="submit" className='btn primary' onClick={scrollTop}>Requst OTP</button>
+          <button type="submit" className='btn primary' onClick={scrollTop}>Request OTP</button>
         </form>
       </div>
     </section>

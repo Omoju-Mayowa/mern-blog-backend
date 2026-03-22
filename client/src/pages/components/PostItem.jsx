@@ -4,7 +4,6 @@ import { motion } from 'motion/react'
 import PostAuthor from './PostAuthor'
 import LikeButton from './LikeButton'
 import MediaDisplay from './MediaDisplay'
-import { useTransition } from './context/transitionContext'
 import { UserContext } from './context/userContext'
 import { CARD_DEFAULT_ORDER } from './postLayoutConstants'
 import API from './axios.js'
@@ -27,9 +26,8 @@ const PostItem = ({
   authorID, thumbnail, videoUrl, createdAt,
   likesCount = 0, likedBy = [],
 }) => {
-  const navigate = useNavigate()
-  const { setOrigin, storePreload } = useTransition()
-  const { cardOrder }               = useContext(UserContext)
+  const navigate      = useNavigate()
+  const { cardOrder } = useContext(UserContext)
 
   const articleRef  = useRef(null)
   const prefetchRef = useRef(null)
@@ -64,16 +62,6 @@ const PostItem = ({
       : stripHtml(description)
 
   const handleClick = () => {
-    if (articleRef.current) {
-      const rect = articleRef.current.getBoundingClientRect()
-      setOrigin({
-        x: rect.left, y: rect.top,
-        width: rect.width, height: rect.height,
-        centerX: rect.left + rect.width / 2,
-        centerY: rect.top  + rect.height / 2,
-      })
-    }
-    if (prefetchRef.current) storePreload(prefetchRef.current)
     scrollTop()
     navigate(`/posts/${postID}`)
   }
