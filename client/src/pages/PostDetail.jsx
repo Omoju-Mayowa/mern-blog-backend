@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion } from 'motion/react'
 import PostAuthor from './components/PostAuthor'
 import LikeButton from './components/LikeButton'
 import { UserContext } from './components/context/userContext'
-import { useTransition } from './components/context/transitionContext'
 import Loader from './components/Loader'
 import DeletePost from './DeletePost'
 import API from './components/axios.js'
 
-// ── Detail has its own 4-section order, stored separately from card order ──
 export const DETAIL_DEFAULT_ORDER = ['thumbnail', 'meta', 'title', 'description']
 const STORAGE_KEY = 'postDetailLayoutOrder'
 
@@ -49,16 +47,13 @@ const PostDetail = () => {
   const [savedOrder, setSavedOrder] = useState(loadDetailOrder)
   const [dragOrder,  setDragOrder]  = useState([...loadDetailOrder()])
 
-  // Native drag refs — no state updates mid-drag
   const dragItem     = useRef(null)
   const dragOverItem = useRef(null)
 
-  const { currentUser }                                          = useContext(UserContext)
-  const { originRect, clearOrigin, preloadedPost, clearPreload } = useTransition()
+  const { currentUser } = useContext(UserContext)
   const assetsBase = import.meta.env.VITE_API_ASSETS_URL
 
   useEffect(() => {
-    if (preloadedPost) { setPost(preloadedPost); clearPreload(); return }
     const getPost = async () => {
       setIsLoading(true)
       try {
@@ -69,8 +64,6 @@ const PostDetail = () => {
     }
     getPost()
   }, [id])
-
-  useEffect(() => { return () => clearOrigin() }, [])
 
   const enterDragMode = () => { setDragOrder([...savedOrder]); setIsDragMode(true) }
 
@@ -88,9 +81,9 @@ const PostDetail = () => {
     setIsDragMode(false)
   }
 
-  const handleDragStart = (i)  => { dragItem.current = i }
-  const handleDragEnter = (i)  => { dragOverItem.current = i }
-  const handleDragEnd   = ()   => {
+  const handleDragStart = (i) => { dragItem.current = i }
+  const handleDragEnter = (i) => { dragOverItem.current = i }
+  const handleDragEnd   = () => {
     if (dragItem.current === null || dragOverItem.current === null) return
     if (dragItem.current === dragOverItem.current) {
       dragItem.current = dragOverItem.current = null
@@ -118,15 +111,6 @@ const PostDetail = () => {
   const videoUrl = resolveUrl(post?.videoUrl)
   const isOwner  = currentUser?.id === post?.creator?._id?.toString()
 
-  const getInitial = () => {
-    if (!originRect) return { opacity: 0, y: 60, scale: 0.97 }
-    const vpW = window.innerWidth, vpH = window.innerHeight
-    const dx    = originRect.centerX - vpW / 2
-    const dy    = originRect.centerY - vpH / 2
-    const scale = Math.max(originRect.width / vpW, originRect.height / vpH)
-    return { opacity: 0.4, x: dx, y: dy, scale }
-  }
-
   const renderSection = (section) => {
     switch (section) {
       case 'thumbnail':
@@ -142,7 +126,6 @@ const PostDetail = () => {
           </motion.div>
         )
       case 'meta':
-        // author + like merged into one section
         return (
           <motion.div key="meta" className="pd__meta"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
@@ -178,118 +161,113 @@ const PostDetail = () => {
   }
 
   return (
-    <>
-      <motion.div className="pd"
-        initial={getInitial()}
-        animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 60, scale: 0.97 }}
-        transition={{ type: 'spring', stiffness: 280, damping: 30 }}
-      >
-        {/* Top bar */}
-        <div className="pd__bar">
-          <motion.button className="pd__back" onClick={() => navigate(-1)}
-            whileHover={{ x: -3 }} whileTap={{ scale: 0.95 }}
-          >← Back</motion.button>
+    <motion.div className="pd"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
+      {/* Top bar */}
+      <div className="pd__bar">
+        <motion.button className="pd__back" onClick={() => navigate(-1)}
+          whileHover={{ x: -3 }} whileTap={{ scale: 0.95 }}
+        >← Back</motion.button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <motion.button
-              className="btn sm"
-              onClick={isDragMode ? handleDone : enterDragMode}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                background: isDragMode ? 'var(--color-primary)' : undefined,
-                color:      isDragMode ? '#fff'                  : undefined,
-              }}
-            >
-              {isDragMode ? 'Save Layout' : '⠿ Layout'}
-            </motion.button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <motion.button
+            className="btn sm"
+            onClick={isDragMode ? handleDone : enterDragMode}
+            whileTap={{ scale: 0.95 }}
+            style={{
+              background: isDragMode ? 'var(--color-primary)' : undefined,
+              color:      isDragMode ? '#fff'                  : undefined,
+            }}
+          >
+            {isDragMode ? 'Save Layout' : '⠿ Layout'}
+          </motion.button>
 
-            {isOwner && (
-              <div className="pd__owner-actions">
-                <Link to={`/posts/${post._id}/edit`} className="btn sm primary">Edit</Link>
-                <DeletePost postId={id} />
+          {isOwner && (
+            <div className="pd__owner-actions">
+              <Link to={`/posts/${post._id}/edit`} className="btn sm primary">Edit</Link>
+              <DeletePost postId={id} />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="pd__body">
+        <div className="pd__inner">
+          {isDragMode ? (
+            <>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{
+                textAlign: 'center', fontSize: '0.75rem', fontWeight: 700,
+                color: 'var(--color-primary)', letterSpacing: '0.8px',
+                textTransform: 'uppercase', marginBottom: 'var(--space-4)',
+              }}>
+                Drag to reorder — tap Save Layout when done
+              </motion.p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                {dragOrder.map((section, i) => (
+                  <motion.div
+                    key={section}
+                    draggable
+                    onDragStart={() => handleDragStart(i)}
+                    onDragEnter={() => handleDragEnter(i)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={e => e.preventDefault()}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.18 }}
+                    style={{
+                      background: 'var(--color-surface)',
+                      borderRadius: 'var(--radius-3)',
+                      border: '1.5px dashed var(--color-primary-30)',
+                      cursor: 'grab', overflow: 'hidden', userSelect: 'none',
+                    }}
+                  >
+                    <div style={{
+                      padding: 'var(--space-2) var(--space-4)',
+                      display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
+                      borderBottom: '1px solid var(--color-border)',
+                      background: 'var(--color-primary-10)',
+                    }}>
+                      <span style={{
+                        width: '20px', height: '20px', borderRadius: '50%',
+                        background: 'var(--color-primary-20)', color: 'var(--color-primary)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '0.68rem', fontWeight: 700, flexShrink: 0,
+                      }}>{i + 1}</span>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-primary)', flex: 1 }}>
+                        {DETAIL_SECTION_LABELS[section]}
+                      </span>
+                      <span style={{ color: 'var(--color-text-muted)', opacity: 0.5, fontSize: '1rem' }}>⠿</span>
+                    </div>
+                    <div style={{ padding: 'var(--space-3) var(--space-4)', opacity: 0.8, pointerEvents: 'none' }}>
+                      {renderSection(section)}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            )}
-          </div>
+
+              <button onClick={handleReset} style={{
+                marginTop: 'var(--space-4)', display: 'block', width: '100%',
+                padding: 'var(--space-2)', borderRadius: 'var(--radius-2)',
+                border: '1px dashed var(--color-border)', background: 'transparent',
+                color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)',
+                cursor: 'pointer', fontFamily: 'var(--font-base)',
+              }}>
+                ↺ Reset to default
+              </button>
+            </>
+          ) : (
+            savedOrder.map(section => (
+              <div key={section}>{renderSection(section)}</div>
+            ))
+          )}
         </div>
-
-        {/* Body */}
-        <div className="pd__body">
-          <div className="pd__inner">
-            {isDragMode ? (
-              <>
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{
-                  textAlign: 'center', fontSize: '0.75rem', fontWeight: 700,
-                  color: 'var(--color-primary)', letterSpacing: '0.8px',
-                  textTransform: 'uppercase', marginBottom: 'var(--space-4)',
-                }}>
-                  Drag to reorder — tap Save Layout when done
-                </motion.p>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                  {dragOrder.map((section, i) => (
-                    <motion.div
-                      key={section}
-                      draggable
-                      onDragStart={() => handleDragStart(i)}
-                      onDragEnter={() => handleDragEnter(i)}
-                      onDragEnd={handleDragEnd}
-                      onDragOver={e => e.preventDefault()}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04, duration: 0.18 }}
-                      style={{
-                        background: 'var(--color-surface)',
-                        borderRadius: 'var(--radius-3)',
-                        border: '1.5px dashed var(--color-primary-30)',
-                        cursor: 'grab', overflow: 'hidden', userSelect: 'none',
-                      }}
-                    >
-                      {/* Handle */}
-                      <div style={{
-                        padding: 'var(--space-2) var(--space-4)',
-                        display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
-                        borderBottom: '1px solid var(--color-border)',
-                        background: 'var(--color-primary-10)',
-                      }}>
-                        <span style={{
-                          width: '20px', height: '20px', borderRadius: '50%',
-                          background: 'var(--color-primary-20)', color: 'var(--color-primary)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '0.68rem', fontWeight: 700, flexShrink: 0,
-                        }}>{i + 1}</span>
-                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-primary)', flex: 1 }}>
-                          {DETAIL_SECTION_LABELS[section]}
-                        </span>
-                        <span style={{ color: 'var(--color-text-muted)', opacity: 0.5, fontSize: '1rem' }}>⠿</span>
-                      </div>
-                      {/* Preview */}
-                      <div style={{ padding: 'var(--space-3) var(--space-4)', opacity: 0.8, pointerEvents: 'none' }}>
-                        {renderSection(section)}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <button onClick={handleReset} style={{
-                  marginTop: 'var(--space-4)', display: 'block', width: '100%',
-                  padding: 'var(--space-2)', borderRadius: 'var(--radius-2)',
-                  border: '1px dashed var(--color-border)', background: 'transparent',
-                  color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)',
-                  cursor: 'pointer', fontFamily: 'var(--font-base)',
-                }}>
-                  ↺ Reset to default
-                </button>
-              </>
-            ) : (
-              savedOrder.map(section => (
-                <div key={section}>{renderSection(section)}</div>
-              ))
-            )}
-          </div>
-        </div>
-      </motion.div>
-    </>
+      </div>
+    </motion.div>
   )
 }
 
