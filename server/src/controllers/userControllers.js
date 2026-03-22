@@ -103,6 +103,12 @@ export const registerUser = async (req, res, next) => {
             avatar: 'default-avatar.png', 
             pepperVersion: version
         });
+      
+        await sendEmail(
+          newUser.email,
+          'Welcome to Mern Blog 👋',
+          welcomeTemplate(newUser.name)
+        )
         
         res.status(201).json({ message: "Registered", id: newUser._id });
     } catch (error) {

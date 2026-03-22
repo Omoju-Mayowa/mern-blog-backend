@@ -123,7 +123,6 @@ const resetConfirmTemplate = (name) => `
 </html>
 `
 
-
 const suspiciousLoginTemplate = (name, ip) => `
 <!DOCTYPE html>
 <html>
@@ -187,4 +186,111 @@ const suspiciousLoginTemplate = (name, ip) => `
 </html>
 `
 
-export { otpEmailTemplate, resetConfirmTemplate, suspiciousLoginTemplate }
+const welcomeTemplate = (name) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="margin:0;padding:0;background:#f2f2ff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0f0;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#0c0c22;padding:28px 40px;">
+              <span style="color:#6f6af8;font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">MERN BLOG</span>
+            </td>
+          </tr>
+
+          <!-- Hero accent bar -->
+          <tr>
+            <td style="background:linear-gradient(90deg,#6f6af8,#a78bfa);height:4px;"></td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <p style="color:#6f6af8;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 10px;">Welcome aboard</p>
+              <h1 style="color:#0c0c22;font-size:24px;font-weight:700;margin:0 0 16px;line-height:1.3;">Good to have you, ${name} 👋</h1>
+              <p style="color:#555577;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Your account is ready. You can now write posts, follow authors, and join the conversation.
+              </p>
+
+              <!-- CTA Button -->
+              <div style="text-align:center;margin-bottom:36px;">
+                <a href="${process.env.CLIENT_URL}" style="display:inline-block;background:#6f6af8;color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:50px;font-size:15px;font-weight:600;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                  Start reading →
+                </a>
+              </div>
+
+              <!-- Feature highlights -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+                <tr>
+                  <td style="padding:12px 16px;background:#f8f8ff;border-radius:10px;margin-bottom:8px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:32px;font-size:20px;vertical-align:top;">✍️</td>
+                        <td style="padding-left:12px;">
+                          <p style="color:#0c0c22;font-size:14px;font-weight:600;margin:0 0 2px;">Write & publish</p>
+                          <p style="color:#777799;font-size:13px;margin:0;line-height:1.5;">Share your ideas with the world in minutes.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr><td style="height:8px;"></td></tr>
+                <tr>
+                  <td style="padding:12px 16px;background:#f8f8ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:32px;font-size:20px;vertical-align:top;">🔖</td>
+                        <td style="padding-left:12px;">
+                          <p style="color:#0c0c22;font-size:14px;font-weight:600;margin:0 0 2px;">Discover authors</p>
+                          <p style="color:#777799;font-size:13px;margin:0;line-height:1.5;">Follow writers whose work resonates with you.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr><td style="height:8px;"></td></tr>
+                <tr>
+                  <td style="padding:12px 16px;background:#f8f8ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="width:32px;font-size:20px;vertical-align:top;">👍</td>
+                        <td style="padding-left:12px;">
+                          <p style="color:#0c0c22;font-size:14px;font-weight:600;margin:0 0 2px;">Like & engage</p>
+                          <p style="color:#777799;font-size:13px;margin:0;line-height:1.5;">Show appreciation for posts that inspire you.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="color:#9999bb;font-size:13px;line-height:1.6;margin:0;">
+                If you didn't create this account, you can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid #e0e0f0;background:#fafaff;">
+              <p style="color:#aaaacc;font-size:12px;margin:0;">© ${new Date().getFullYear()} Mern Blog &nbsp;·&nbsp; This is an automated message</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`
+
+export { otpEmailTemplate, resetConfirmTemplate, suspiciousLoginTemplate, welcomeTemplate }
