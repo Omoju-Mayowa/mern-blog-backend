@@ -25,7 +25,7 @@ const Register = () => {
       if (!response.data) {
         setError('Registration failed. Please try again.')
       } else {
-        navigate('/login')
+        navigate('/login', { state: { email: userData.email } })
       }
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'An error occurred')
