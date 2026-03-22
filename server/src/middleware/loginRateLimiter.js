@@ -4,10 +4,10 @@ import Redis from "ioredis";
 
 const redisClient = new Redis(process.env.REDIS_URL);
 
-const WHITELIST_IPS = process.env.WHITELIST_IPS
+const WHITELIST_IPS = (process.env.WHITELIST_IPS || "")
   .split(",")
   .map((s) => s.trim())
-  .filter(Boolean);
+  .filter(Boolean)
 
 // Limits
 const maxAttemptsByIP = 10; // e.g., 7 attempts per window

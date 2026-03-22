@@ -6,29 +6,32 @@ import fileUpload from "express-fileupload";
 import helmet from "helmet";
 import { default as rateLimit } from "express-rate-limit";
 import cookieParser from "cookie-parser";
+import mongoSanitize from "express-mongo-sanitize";
+import xssClean from "xss-clean";
 
-import { connectToAvailableMongoDB } from "./utils/db.js";
-import __dirname from "./utils/directory.js";
-import userRoutes from "./routes/userRoutes.js";
-import postRoutes from "./routes/postRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import uploadRouter from "./routes/upload.js"; // R2 upload route
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import { connectToAvailableMongoDB } from "./src/utils/db.js";
+import __dirname from "./src/utils/directory.js";
+import userRoutes from "./src/routes/userRoutes.js";
+import postRoutes from "./src/routes/postRoutes.js";
+import categoryRoutes from "./src/routes/categoryRoutes.js";
+import uploadRouter from "./src/routes/upload.js"; // R2 upload route
+import { notFound, errorHandler } from "./src/middleware/errorMiddleware.js";
 
 // ────────────────────────────────────────────────────────────
 // ⚙️ Express setup
 // ────────────────────────────────────────────────────────────
 
-const app = express();
-app.set("trust proxy", 1);
+export const app = express();
 
+console.log(process.env.NODE_ENV)
+
+app.set("trust proxy", 1);
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ message: err.message })
-})
+app.use(mongoSanitize())
+app.use(xssClean())
 
 const normalize = (s="") => s.trim().replace(/\/$/, "")
 const allowedOrigins = (process.env.SITE_LINK || "")
@@ -73,6 +76,11 @@ app.use("/api/upload/", uploadRouter); // Cloudflare R2 upload route
 // Error handling
 app.use(notFound);
 app.use(errorHandler);
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({ message: err.message })
+})
+
+
 
 // Connect to MongoDB
 try {
@@ -83,7 +91,3 @@ try {
   );
   process.exit(1);
 }
-
-// Start server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`🚀 Server Started on port ${PORT}`));

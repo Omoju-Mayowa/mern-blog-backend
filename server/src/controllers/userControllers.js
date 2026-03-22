@@ -12,6 +12,7 @@ import { getPeppers, getCurrentPepper } from '../utils/peppers.js';
 import sendEmail from '../utils/sendEmail.js';
 import { shouldSendLoginAlert, resetLoginAlerts } from '../middleware/loginRateLimiter.js';
 import sendCookie from '../utils/sendCookie.js'
+import { suspiciousLoginTemplate } from '../utils/emailTemplates.js';
 
 const avatarSizeBytes = 10485760; 
 
@@ -113,10 +114,12 @@ export const registerUser = async (req, res, next) => {
 
 
 export const loginUser = async (req, res, next) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return next(new HttpError("Please fill in all fields.", 422));
+    const { email, password } = req.body
+    if (!email || !password) return next(new HttpError("Please fill in all fields.", 422))
+    
+    // Add this:
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return next(new HttpError("Invalid credentials", 401))
     }
 
     try {
@@ -135,15 +138,11 @@ export const loginUser = async (req, res, next) => {
         if (matchedIndex === null || matchedIndex === undefined) {
             const shouldAlert = await shouldSendLoginAlert(user.email);
             if (shouldAlert) {
-                await sendEmail(
-                    user.email,
-                    'Security Alert: Failed Login Attempts',
-                    `<h4>Hello ${user.name || 'there'}</h4>
-                     <p>We detected multiple failed login attempts on your account.</p>
-                     <p><b>IP Address:</b> ${req.ip}</p>
-                     <p>If this wasn’t you, please reset your password.</p>
-                     <h4>Regards,<br/>Mern Blog Team</h4>`
-                );
+              await sendEmail(
+                user.email,
+                'Security Alert: Failed Login Attempts',
+                suspiciousLoginTemplate(user.name, req.ip)
+              )
             }
             return next(new HttpError('Invalid credentials', 401));
         }
@@ -163,12 +162,6 @@ export const loginUser = async (req, res, next) => {
         }
 
         await resetLoginAlerts(user.email);
-
-        const token = jwt.sign(
-            { id: user._id, name: user.name }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '1d' }
-        );
       
         // res.status(200).json({ 
         //     id: user._id, 
@@ -176,12 +169,7 @@ export const loginUser = async (req, res, next) => {
         //     avatar: user.avatar 
         // });
 
-        return sendCookie(res, token, 200, {
-          id: user._id,
-          name: user.name,
-          avatar: user.avatar
-        })
-    
+        sendCookie(res, 200, { id: user._id, name: user.name, avatar: user.avatar })
 
     } catch (error) {
         console.error("Login Controller Error:", error);
@@ -275,10 +263,71 @@ export const getAuthors = async (req, res, next) => {
 export const changeAvatar = updateUserProfile;
 
 export const logout = (req, res, next) => {
-  res.clearCookie('access_token', {
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  res.clearCookie('token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict"
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    path: '/',
+    domain: isProduction ? '.yourdomain.com' : 'localhost'
   })
-  res.status(200).json({ message: "Logged out" })
+
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    path: '/',
+    domain: isProduction ? '.yourdomain.com' : 'localhost'
+  })
+
+  res.status(200).json({ message: 'Logged out' })
+}
+
+export const refreshToken = async (req, res, next) => {
+  try {
+    const token = req.cookies?.refreshToken
+
+    if (!token) {
+      return res.status(401).json({ message: 'No refresh token' })
+    }
+
+    let decoded
+    try {
+      decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+      console.log('decoded.id:', JSON.stringify(decoded))
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Refresh token expired. Please log in again.' })
+      }
+      return res.status(401).json({ message: 'Invalid refresh token' })
+    }
+
+    const user = await User.findById(decoded.id || decoded._id)
+    console.log('user found:', user)
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' })
+    }
+
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    const newAccessToken = jwt.sign(
+      { id: user._id, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' }
+    )
+
+    res.cookie('token', newAccessToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: 15 * 60 * 1000,
+      path: '/'
+    })
+    
+
+    return res.status(200).json({ message: 'Token refreshed' })
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error during token refresh' })
+  }
 }
