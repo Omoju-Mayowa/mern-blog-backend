@@ -20,10 +20,13 @@ import { notFound, errorHandler } from "./src/middleware/errorMiddleware.js";
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: "Too many requests, slow down." }
+  message: { message: "Too many requests, slow down." },
+  skip: (req) => {
+    return req.path.includes("/post/stream");
+  }
 })
 
 // ────────────────────────────────────────────────────────────
