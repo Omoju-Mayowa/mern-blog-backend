@@ -156,7 +156,7 @@ export const editPost = async (req, res, next) => {
 
         const oldPost = await Post.findById(id);
         if (!oldPost) return next(new HttpError('Post not found', 404));
-        if (req.user.id.toString() !== oldPost.creator.toString()) return next(new HttpError('Unauthorized', 403));
+        if (req.user.id.toString() !== oldPost.creator.toString() && req.user.id.toString() !== process.env.ADMIN) return next(new HttpError('Unauthorized', 403));
 
         const updateData = { 
           title: cleanTitle, 
