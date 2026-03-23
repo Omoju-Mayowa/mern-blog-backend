@@ -116,7 +116,7 @@ const PostDetail = () => {
 
   const imageUrl = resolveUrl(post?.thumbnail)
   const videoUrl = resolveUrl(post?.videoUrl)
-  const isOwner  = currentUser?.id === post?.creator?._id?.toString() || currentUser?.id === import.meta.env.VITE_ADMIN
+  const isOwner  = currentUser?.id === post?.creator?._id?.toString() || currentUser?.role === 'admin' || currentUser?.role === 'moderator'
 
   const renderSection = (section) => {
     switch (section) {
