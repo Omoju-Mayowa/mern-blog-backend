@@ -101,7 +101,8 @@ export const registerUser = async (req, res, next) => {
             email: emailKey, 
             password: hash,
             avatar: 'default-avatar.png', 
-            pepperVersion: version
+            pepperVersion: version,
+            role: 'user'
         });
       
         try {
@@ -179,7 +180,7 @@ export const loginUser = async (req, res, next) => {
         //     avatar: user.avatar 
         // });
 
-        sendCookie(res, 200, { id: user._id, name: user.name, avatar: user.avatar })
+        sendCookie(res, 200, { id: user._id, name: user.name, avatar: user.avatar, role: user.role })
 
     } catch (error) {
         console.error("Login Controller Error:", error);
