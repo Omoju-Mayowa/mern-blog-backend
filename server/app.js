@@ -37,6 +37,7 @@ console.log(process.env.NODE_ENV)
 app.set("trust proxy", 1);
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+app.use(globalLimiter)
 app.use(cookieParser())
 
 app.use(mongoSanitize())
