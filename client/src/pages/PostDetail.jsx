@@ -45,7 +45,8 @@ const PostDetail = () => {
   const [isLoading, setIsLoading]   = useState(false)
   const [isDragMode, setIsDragMode] = useState(false)
   const [savedOrder, setSavedOrder] = useState(loadDetailOrder)
-  const [dragOrder,  setDragOrder]  = useState([...loadDetailOrder()])
+  const [dragOrder, setDragOrder] = useState([...loadDetailOrder()])
+  const [navigating, setNavigating] = useState(false)
 
   const dragItem     = useRef(null)
   const dragOverItem = useRef(null)
@@ -79,6 +80,12 @@ const PostDetail = () => {
     setDragOrder(def)
     saveDetailOrder(def)
     setIsDragMode(false)
+  }
+  
+  const handleBack = () => {
+    if (navigating) return
+    setNavigating(true)
+    navigate(-1)
   }
 
   const handleDragStart = (i) => { dragItem.current = i }
@@ -168,8 +175,8 @@ const PostDetail = () => {
     >
       {/* Top bar */}
       <div className="pd__bar">
-        <motion.button className="pd__back" onClick={() => navigate(-1)}
-          whileHover={{ x: -3 }} whileTap={{ scale: 0.95 }}
+        <motion.button className="pd__back" onClick={handleBack}
+          whileHover={{ x: -3 }} whileTap={{ scale: 0.95 }} disabled={navigating}
         >← Back</motion.button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>

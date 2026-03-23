@@ -9,3 +9,4 @@ server/uploads/
 Dockerfile
 READMe.Docker.md
 compose.yaml
+*dum.rdb
