@@ -10,3 +10,8 @@ Dockerfile
 READMe.Docker.md
 compose.yaml
 *dum.rdb
+
+/server/.env
+
+client/.env.production
+client/.env.deployment
