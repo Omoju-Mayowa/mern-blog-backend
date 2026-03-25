@@ -82,7 +82,11 @@ export {
 // Express middleware wrapper for login rate limiting
 export async function loginRateLimiter(req, res, next) {
   try {
-    await consumeIfNotWhitelisted(req.ip);
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket.remoteAddress;
+    
+    await consumeIfNotWhitelisted(ip);
     return next();
   } catch (rateLimiterRes) {
     const retrySecs = Math.ceil((rateLimiterRes?.msBeforeNext || 0) / 1000);

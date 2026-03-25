@@ -1,6 +1,6 @@
 node_modules/
 **/node_modules/
-.env
+*.env
 *.DS_Store
 server/uploads/
 .git.backup/
@@ -15,3 +15,6 @@ compose.yaml
 
 client/.env.production
 client/.env.deployment
+
+*.env.production
+*.env.deployment
