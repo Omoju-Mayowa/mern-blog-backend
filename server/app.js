@@ -61,12 +61,10 @@ app.use(express.json({ extended: true, limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 app.use(cookieParser())
-
 app.use(globalLimiter)
 app.use(mongoSanitize())
 app.use(xssClean())
 
-// Allow Authorization header in CORS preflight
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Headers",
@@ -74,6 +72,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 
 // server/index.js (near app init)
 app.set("trust proxy", 1);
@@ -92,6 +91,13 @@ app.use("/api/upload/", uploadRouter); // Cloudflare R2 upload route
 
 // Error handling
 app.use(notFound);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
+  });
+});
 app.use(errorHandler);
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message })
