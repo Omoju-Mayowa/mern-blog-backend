@@ -57,8 +57,9 @@ console.log(process.env.NODE_ENV)
 
 
 app.set("trust proxy", 1);
-app.use(express.json({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ extended: true, limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
+
 app.use(cookieParser())
 
 app.use(globalLimiter)

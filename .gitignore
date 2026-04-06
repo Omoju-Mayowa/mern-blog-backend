@@ -17,4 +17,4 @@ client/.env.production
 client/.env.deployment
 
 *.env.production
-*.env.deployment
+*.env.development

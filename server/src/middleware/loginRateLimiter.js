@@ -3,8 +3,12 @@ import { RateLimiterRedis } from "rate-limiter-flexible";
 import Redis from "ioredis";
 
 const redisClient = new Redis(process.env.REDIS_URL, {
-  tls: {} // include TLS if Leapcells requires secure connection
+  // tls: {} // include TLS if Leapcells requires secure connection
 });
+
+redisClient.on("error", (err) => {
+  console.error("Redis error:", err);
+})
 
 const WHITELIST_IPS = (process.env.WHITELIST_IPS || "")
   .split(",")

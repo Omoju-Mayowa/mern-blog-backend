@@ -2,11 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import Logo from "../images/logo.png";
-import { FaBars } from "react-icons/fa";
-import { PiMoonStarsFill, PiSunHorizonFill } from "react-icons/pi";
+import { FaBars, FaPalette } from "react-icons/fa";
+import { PiMoonStarsFill, PiPalette, PiPaletteFill, PiSunHorizonFill } from "react-icons/pi";
 import { TbSpacingVertical } from "react-icons/tb";
 import { AiOutlineClose } from "react-icons/ai";
-import { BsCheckLg } from "react-icons/bs";
+import { BsCheckLg, BsPalette, BsPalette2 } from "react-icons/bs";
 import { motion, AnimatePresence } from "motion/react";
 import { UserContext } from "./context/userContext";
 import { useTheme } from "./context/themeContext";
@@ -260,14 +260,15 @@ const Header = () => {
         onClick={() => openCustomize("colors")} whileTap={{ scale: 0.8 }} whileHover={!inSheet ? { scale: 1.12 } : {}}
         title="Customize" style={{ position: "relative", overflow: "visible" }}
       >
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+        {/* <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
           <motion.span
             animate={{ backgroundColor: burstColor, boxShadow: `0 0 0 2px ${burstColor}55` }}
             transition={{ duration: 0.35 }}
             style={{ width: "11px", height: "11px", borderRadius: "50%", display: "inline-block", flexShrink: 0 }}
           />
           {inSheet && <span>Customize</span>}
-        </span>
+        </span> */}
+        <PiPaletteFill />
       </motion.button>
     </>
   );
