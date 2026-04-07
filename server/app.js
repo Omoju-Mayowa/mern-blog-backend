@@ -88,7 +88,6 @@ app.use("/api/users/", userRoutes);
 app.use("/api/posts/", postRoutes);
 app.use("/api/categories/", categoryRoutes);
 app.use("/api/upload/", uploadRouter); // Cloudflare R2 upload route
-app.get('/kaithheathcheck', (_, res) => res.sendStatus(200));
 // Error handling
 app.use(notFound);
 
