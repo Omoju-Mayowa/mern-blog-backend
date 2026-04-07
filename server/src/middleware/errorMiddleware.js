@@ -1,8 +1,8 @@
 // Unsupported (404) routes
 const notFound = (req, res, next) => {
   // silence health check pings
-  if (req.originalUrl === '/kaithheathcheck') {
-    return res.status(200).json({ status: 'ok' });
+  if (req.originalUrl.includes('healthcheck')) {
+     return res.status(200).json({ status: 'ok' });
   }
   const error = new Error(`Page Not Found - ${req.originalUrl}`);
   error.code = 404;
