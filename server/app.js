@@ -90,18 +90,7 @@ app.use("/api/categories/", categoryRoutes);
 app.use("/api/upload/", uploadRouter); // Cloudflare R2 upload route
 // Error handling
 app.use(notFound);
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500).json({
-    message: err.message || "Internal Server Error",
-  });
-});
 app.use(errorHandler);
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ message: err.message })
-})
-
 
 
 // Connect to MongoDB
